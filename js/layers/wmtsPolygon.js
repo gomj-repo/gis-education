@@ -9,30 +9,30 @@ import {
   wmsUrl,
   qualified,
   LAYERS,
-  STYLES,
   VIEW_PROJECTION,
-  WGS84_ORIGIN,
-  WGS84_RESOLUTIONS,
+  DATA_PROJECTION,
+  WMTS_MATRIX_SET,
+  WMTS_FORMAT,
 } from '../config';
 
-// GeoServer GWC의 EPSG:4326 격자 식별자 형식: `EPSG:4326:{level}`
-const matrixIds = WGS84_RESOLUTIONS.map((_, z) => `EPSG:4326:${z}`);
+const OPACITY = 0.6; // jpeg 타일은 투명도가 없어 배경을 가리므로 반투명 처리
 
-/** 스타일별 WMTS 소스를 만든다. (타일은 스타일 단위로 캐시되므로 변경 시 소스를 교체) */
-function buildSource(style) {
+// GoogleCRS84Quad(EPSG:4326) 격자: origin [-180,90], level0 = 1타일(해상도 1.40625°/px).
+// admin WMTS는 이 격자만 지원하므로 소스는 4326로 만들고 OL이 뷰(3857)로 재투영한다.
+const data4326 = getProjection(DATA_PROJECTION);
+const resolutions = Array.from({ length: 20 }, (_, z) => 1.40625 / 2 ** z);
+const matrixIds = resolutions.map((_, z) => `${WMTS_MATRIX_SET}_${z}`);
+
+function buildWmtsSource() {
   return new WMTS({
     url: wmtsUrl(),
     layer: qualified(LAYERS.admin),
-    matrixSet: 'EPSG:4326',
-    format: 'image/png',
-    style: style || '',
-    projection: getProjection(VIEW_PROJECTION),
+    matrixSet: WMTS_MATRIX_SET,
+    format: WMTS_FORMAT,
+    style: '',
+    projection: data4326,
     requestEncoding: 'KVP',
-    tileGrid: new WMTSTileGrid({
-      origin: WGS84_ORIGIN,
-      resolutions: WGS84_RESOLUTIONS,
-      matrixIds,
-    }),
+    tileGrid: new WMTSTileGrid({ origin: [-180, 90], resolutions, matrixIds }),
     crossOrigin: 'anonymous',
   });
 }
@@ -40,10 +40,11 @@ function buildSource(style) {
 /**
  * 읍면동 경계 레이어 (WMTS, polygon).
  * WMTS를 쓰는 이유: 미리 잘라 둔 타일이라 넓은 면 데이터를 빠르게 표출한다.
- * 기본은 서버 기본 스타일, 토글 시 red_polygon 타일을 요청한다.
+ * 스타일 변경은 지원하지 않는다 — WMTS 타일은 스타일별로 캐시되어 기본 스타일만 시드돼
+ * 있으므로 STYLE 파라미터가 무시된다. (스타일 토글의 대상이 아님)
  */
 export function createAdminLayer() {
-  const layer = new TileLayer({ source: buildSource('') });
+  const layer = new TileLayer({ source: buildWmtsSource(), opacity: OPACITY });
 
   // WMTS는 OL에 GetFeatureInfo 헬퍼가 없어, 같은 레이어의 WMS로 속성만 되묻는다.
   const infoSource = new ImageWMS({
@@ -54,9 +55,8 @@ export function createAdminLayer() {
 
   return {
     layer,
-    setStyled(on) {
-      layer.setSource(buildSource(on ? STYLES.admin : ''));
-    },
+    // WMTS는 스타일 변경 불가(캐시) → 스타일 토글에 반응하지 않는다.
+    setStyled() {},
     infoAt(map, evt) {
       const url = infoSource.getFeatureInfoUrl(
         evt.coordinate,

@@ -8,18 +8,20 @@
 // --- 인증/접속 정보 (.env) ---
 export const VWORLD_KEY = process.env.VWORLD_ACCESS_KEY;
 export const MAPPRIME_BASE_URL = process.env.MAPPRIME_BASE_URL || '';
-export const MAPPRIME_WORKSPACE = process.env.MAPPRIME_WORKSPACE || '';
+// MapPrime OGC 네임스페이스 접두어. 발행 레이어가 `mapprime:...` 형태라 기본값 mapprime.
+export const MAPPRIME_WORKSPACE = process.env.MAPPRIME_WORKSPACE || 'mapprime';
 
 // --- 좌표계 ---
-export const VIEW_PROJECTION = 'EPSG:4326';
-
-/**
- * EPSG:4326(WGS84) 표준 타일 격자.
- * level 0 = 경도 360°를 2개 타일(각 180°/256px)로 → 최상위 해상도 0.703125 도/픽셀.
- * VWorld 배경 WMTS와 MapPrime WMTS(GWC)가 같은 격자를 쓰도록 공유한다.
- */
-export const WGS84_ORIGIN = [-180, 90];
-export const WGS84_RESOLUTIONS = Array.from({ length: 20 }, (_, z) => 0.703125 / 2 ** z);
+// 지도 뷰·배경은 웹 메르카토르(3857). VWorld 타일이 3857 격자로만 제공되기 때문이다.
+export const VIEW_PROJECTION = 'EPSG:3857';
+// 원본 데이터·MapPrime 서비스 좌표계. 로드 시 뷰(3857)로 재투영한다.
+export const DATA_PROJECTION = 'EPSG:4326';
+// MapPrime WMTS TileMatrixSet. admin 레이어는 GoogleCRS84Quad(EPSG:4326)만 지원한다.
+// (GetCapabilities 확인: TileMatrix 식별자 `GoogleCRS84Quad_{level}`, 포맷은 jpeg만 시드됨.)
+export const WMTS_MATRIX_SET = 'GoogleCRS84Quad';
+export const WMTS_FORMAT = 'image/jpeg';
+// MapPrime WFS는 2.0.0 미지원 → 1.1.0 사용(확인: 2.0.0 요청 시 OperationNotSupported).
+export const WFS_VERSION = '1.1.0';
 
 // --- 레이어명 (gpkg 테이블명과 동일) ---
 export const LAYERS = {
@@ -39,7 +41,7 @@ export const STYLES = {
 export const qualified = (name) =>
   MAPPRIME_WORKSPACE ? `${MAPPRIME_WORKSPACE}:${name}` : name;
 
-// --- OGC 엔드포인트 (base URL 하위 경로 가정, 서버 구성에 맞게 조정) ---
-export const wmsUrl = () => `${MAPPRIME_BASE_URL}/wms`;
-export const wfsUrl = () => `${MAPPRIME_BASE_URL}/wfs`;
-export const wmtsUrl = () => `${MAPPRIME_BASE_URL}/gwc/service/wmts`;
+// --- OGC(OWS) 엔드포인트 — MapPrime은 /map 하위에 WMS/WFS/WMTS를 발행한다 (CLAUDE.md # ows Service). ---
+export const wmsUrl = () => `${MAPPRIME_BASE_URL}/map/wms`;
+export const wfsUrl = () => `${MAPPRIME_BASE_URL}/map/wfs`;
+export const wmtsUrl = () => `${MAPPRIME_BASE_URL}/map/wmts`;

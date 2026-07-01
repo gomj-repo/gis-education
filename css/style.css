@@ -134,6 +134,17 @@ body {
   font-size: 12px;
 }
 
+#panel .row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.15rem 0;
+}
+
+#panel select {
+  flex: 1;
+}
+
 /* 클릭 속성조회 팝업 */
 .ol-popup {
   position: absolute;

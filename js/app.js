@@ -1,5 +1,6 @@
 import 'ol/ol.css';
 import { createMap } from './map';
+import { createBaseMaps } from './baseMaps';
 import { createAdminLayer } from './layers/wmtsPolygon';
 import { createLinesLayer } from './layers/wfsLine';
 import { createStationsLayer } from './layers/wmsPoint';
@@ -8,7 +9,11 @@ import { createPopup } from './popup';
 // VWorld 배경지도 위에 MapPrime OGC 레이어를 올리는 실습 뷰어의 진입점.
 const map = createMap('map');
 
-// 레이어 모듈 (이후 커밋에서 WMS/WMTS 추가)
+// 배경지도(VWorld) — 데이터 레이어보다 아래(맨 밑)에 깐다.
+const baseMaps = createBaseMaps();
+baseMaps.orderedLayers.forEach((layer) => map.addLayer(layer));
+
+// 레이어 모듈 (MapPrime OGC: 읍면동 WMTS · 노선 WFS · 역 WMS)
 const modules = {
   admin: createAdminLayer(),
   lines: createLinesLayer(),
@@ -49,5 +54,21 @@ document.getElementById('style-toggle').addEventListener('change', (e) => {
   const on = e.target.checked;
   Object.values(modules).forEach((m) => m.setStyled(on));
 });
+
+// 배경지도: 종류 옵션 채우기 + on/off·전환·하이브리드 토글
+const baseSelect = document.getElementById('base-select');
+Object.entries(baseMaps.TYPES).forEach(([type, { label }]) => {
+  const opt = document.createElement('option');
+  opt.value = type;
+  opt.textContent = label;
+  baseSelect.appendChild(opt);
+});
+baseSelect.addEventListener('change', (e) => baseMaps.setActive(e.target.value));
+document
+  .getElementById('base-toggle')
+  .addEventListener('change', (e) => baseMaps.setVisible(e.target.checked));
+document
+  .getElementById('hybrid-toggle')
+  .addEventListener('change', (e) => baseMaps.setHybrid(e.target.checked));
 
 export default map;

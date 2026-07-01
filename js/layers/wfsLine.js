@@ -3,7 +3,7 @@ import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Style, Stroke } from 'ol/style';
 
-import { wfsUrl, qualified, LAYERS, VIEW_PROJECTION } from '../config';
+import { wfsUrl, qualified, LAYERS, DATA_PROJECTION, WFS_VERSION } from '../config';
 
 /** 기본: 피처의 colour 속성으로 노선을 칠한다. (WFS는 데이터를 받아 클라이언트가 그린다) */
 function colourStyle(feature) {
@@ -20,11 +20,11 @@ const blueStyle = new Style({ stroke: new Stroke({ color: '#0000ff', width: 1 })
  */
 export function createLinesLayer() {
   const url =
-    `${wfsUrl()}?service=WFS&version=2.0.0&request=GetFeature` +
+    `${wfsUrl()}?service=WFS&version=${WFS_VERSION}&request=GetFeature` +
     `&typeName=${encodeURIComponent(qualified(LAYERS.lines))}` +
-    `&outputFormat=application/json&srsName=${VIEW_PROJECTION}`;
+    `&outputFormat=application/json&srsName=${DATA_PROJECTION}`;
 
-  // 30건 → 한 번에 전부 로드(기본 strategy). GeoJSON은 lon/lat(x,y)로 오므로 4326 뷰와 일치.
+  // 30건 → 한 번에 전부 로드(기본 strategy). GeoJSON(4326 lon/lat)은 OL이 뷰(3857)로 재투영.
   const source = new VectorSource({ format: new GeoJSON(), url });
   const layer = new VectorLayer({ source, style: colourStyle });
 
