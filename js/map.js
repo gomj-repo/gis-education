@@ -53,8 +53,8 @@ export function createMap(target) {
     layers: [createVWorldBase()],
     view: new View({
       projection: getProjection(VIEW_PROJECTION),
-      center: [126.98, 37.55], // 서울 중심 (경도, 위도)
-      zoom: 11,
+      center: [126.9707, 37.5547], // 서울역 (경도, 위도)
+      zoom: 14,
       resolutions: WGS84_RESOLUTIONS, // 배경 타일 격자와 줌 레벨을 일치시킨다.
     }),
   });
