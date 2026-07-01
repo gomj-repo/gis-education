@@ -1,5 +1,6 @@
 import 'ol/ol.css';
 import { createMap } from './map';
+import { createAdminLayer } from './layers/wmtsPolygon';
 import { createLinesLayer } from './layers/wfsLine';
 import { createStationsLayer } from './layers/wmsPoint';
 import { createPopup } from './popup';
@@ -9,10 +10,12 @@ const map = createMap('map');
 
 // 레이어 모듈 (이후 커밋에서 WMS/WMTS 추가)
 const modules = {
+  admin: createAdminLayer(),
   lines: createLinesLayer(),
   stations: createStationsLayer(),
 };
-// 그리기 순서: 노선(아래) → 역(위)
+// 그리기 순서: 읍면동(면, 아래) → 노선(선) → 역(점, 위)
+map.addLayer(modules.admin.layer);
 map.addLayer(modules.lines.layer);
 map.addLayer(modules.stations.layer);
 
