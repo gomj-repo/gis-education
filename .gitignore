@@ -10,3 +10,5 @@ dist
 CLAUDE.md
 .agents
 AGENTS.md
+
+.env
