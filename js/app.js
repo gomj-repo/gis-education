@@ -1,6 +1,7 @@
 import 'ol/ol.css';
 import { createMap } from './map';
 import { createLinesLayer } from './layers/wfsLine';
+import { createStationsLayer } from './layers/wmsPoint';
 import { createPopup } from './popup';
 
 // VWorld 배경지도 위에 MapPrime OGC 레이어를 올리는 실습 뷰어의 진입점.
@@ -9,8 +10,11 @@ const map = createMap('map');
 // 레이어 모듈 (이후 커밋에서 WMS/WMTS 추가)
 const modules = {
   lines: createLinesLayer(),
+  stations: createStationsLayer(),
 };
+// 그리기 순서: 노선(아래) → 역(위)
 map.addLayer(modules.lines.layer);
+map.addLayer(modules.stations.layer);
 
 // 클릭 속성조회 팝업
 const popup = createPopup(map);
