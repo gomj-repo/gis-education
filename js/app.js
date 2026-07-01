@@ -44,4 +44,10 @@ document.querySelectorAll('[data-layer]').forEach((cb) => {
   });
 });
 
+// 스타일 변경 토글: OFF=기본(스타일 미요청), ON=빨강(면)/파랑(선)/초록(점)
+document.getElementById('style-toggle').addEventListener('change', (e) => {
+  const on = e.target.checked;
+  Object.values(modules).forEach((m) => m.setStyled(on));
+});
+
 export default map;
