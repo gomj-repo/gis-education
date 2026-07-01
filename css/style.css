@@ -84,6 +84,123 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  background: #eaeaea;
+}
+
+#panel {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  background: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  font: 14px/1.5 system-ui, sans-serif;
+}
+
+#panel h1 {
+  margin: 0 0 0.5rem;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#panel label {
+  display: block;
+  cursor: pointer;
+}
+
+#panel em {
+  color: #666;
+  font-style: normal;
+}
+
+#panel hr {
+  margin: 0.6rem 0;
+}
+
+#panel .hint {
+  margin: 0.5rem 0 0;
+  color: #888;
+  font-size: 12px;
+}
+
+/* 클릭 속성조회 팝업 */
+.ol-popup {
+  position: absolute;
+  min-width: 220px;
+  max-width: 320px;
+  max-height: 320px;
+  overflow: auto;
+  background: #fff;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  bottom: 12px;
+  left: -50px;
+  font: 13px/1.4 system-ui, sans-serif;
+}
+
+.ol-popup::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 48px;
+  border: 10px solid transparent;
+  border-top-color: #fff;
+}
+
+.ol-popup-closer {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  text-decoration: none;
+  color: #999;
+}
+
+.ol-popup-closer::after {
+  content: "\2715";
+}
+
+.popup-item + .popup-item {
+  margin-top: 0.6rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.6rem;
+}
+
+.popup-item h4 {
+  margin: 0 0 0.35rem;
+  font-size: 13px;
+}
+
+.popup-item table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.popup-item th,
+.popup-item td {
+  text-align: left;
+  vertical-align: top;
+  padding: 1px 6px 1px 0;
+  font-weight: 400;
+}
+
+.popup-item th {
+  color: #888;
+  white-space: nowrap;
+}
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */
