@@ -19,6 +19,7 @@ export function createSidePanel({ modules }) {
     layer: document.getElementById('tab-layer'),
   };
   const select = document.getElementById('attr-layer-select');
+  const filterInput = document.getElementById('attr-filter');
   const cards = document.getElementById('attr-cards');
   const layerList = document.getElementById('layer-list');
 
@@ -69,40 +70,62 @@ export function createSidePanel({ modules }) {
   };
   select.addEventListener('change', () => loadCards(select.value));
 
+  // --- 필터: 이름/속성값에 검색어가 포함된 카드만 표시 ---
+  let currentFeats = [];
+  let currentKey = null;
+  const matchesFilter = (feat, term) => {
+    if (!term) return true;
+    const p = feat.properties || {};
+    return Object.values(p).some((v) => String(v ?? '').toLowerCase().includes(term));
+  };
+
+  const renderCards = () => {
+    const meta = LAYER_META[currentKey];
+    const term = filterInput.value.trim().toLowerCase();
+    const feats = currentFeats.filter((f) => matchesFilter(f, term));
+    if (!currentFeats.length) {
+      cards.innerHTML = '<p class="empty">피처가 없습니다.</p>';
+      return;
+    }
+    if (!feats.length) {
+      cards.innerHTML = '<p class="empty">필터에 일치하는 피처가 없습니다.</p>';
+      return;
+    }
+    // MapPrime WFS는 totalFeatures를 안 주므로, 상한(300)에 닿으면 잘렸다고 안내한다.
+    const more = currentFeats.length >= 300 ? `<p class="empty">상위 ${currentFeats.length}건만 표시</p>` : '';
+    cards.innerHTML =
+      more +
+      feats
+        .map((f) => {
+          const p = f.properties || {};
+          const name = p[meta.nameProp] ?? '(이름없음)';
+          const rows = Object.entries(p)
+            .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`)
+            .join('');
+          return (
+            `<div class="card"><div class="card-head">` +
+            `<strong>${esc(name)}</strong>${chip(currentKey)}</div>` +
+            `<table>${rows}</table></div>`
+          );
+        })
+        .join('');
+  };
+  filterInput.addEventListener('input', renderCards);
+
   let reqToken = 0;
   const loadCards = async (key) => {
     if (!key) return;
     const token = ++reqToken;
+    currentKey = key;
+    filterInput.value = '';
     cards.innerHTML = '<p class="empty">불러오는 중…</p>';
     try {
       const res = await fetch(wfsFeaturesUrl(key));
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (token !== reqToken) return; // 더 최신 요청이 있으면 폐기
-      const meta = LAYER_META[key];
-      const feats = json.features || [];
-      if (!feats.length) {
-        cards.innerHTML = '<p class="empty">피처가 없습니다.</p>';
-        return;
-      }
-      // MapPrime WFS는 totalFeatures를 안 주므로, 상한(300)에 닿으면 잘렸다고 안내한다.
-      const more = feats.length >= 300 ? `<p class="empty">상위 ${feats.length}건만 표시</p>` : '';
-      cards.innerHTML =
-        more +
-        feats
-          .map((f) => {
-            const p = f.properties || {};
-            const name = p[meta.nameProp] ?? '(이름없음)';
-            const rows = Object.entries(p)
-              .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`)
-              .join('');
-            return (
-              `<div class="card"><div class="card-head">` +
-              `<strong>${esc(name)}</strong>${chip(key)}</div>` +
-              `<table>${rows}</table></div>`
-            );
-          })
-          .join('');
+      currentFeats = json.features || [];
+      renderCards();
     } catch (e) {
       if (token !== reqToken) return;
       cards.innerHTML = '<p class="empty">불러오기 실패 — MapPrime 서버/CORS를 확인하세요.</p>';

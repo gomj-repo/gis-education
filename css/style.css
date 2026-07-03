@@ -212,9 +212,11 @@ body {
   color: #666;
 }
 
-#sidepanel .field select {
+#sidepanel .field select,
+#sidepanel .field input[type="text"] {
   padding: 0.4rem;
   font-size: 14px;
+  font: inherit;
 }
 
 .cards {
