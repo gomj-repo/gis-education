@@ -5,6 +5,7 @@ import { createAdminLayer } from './layers/wmtsPolygon';
 import { createLinesLayer } from './layers/wfsLine';
 import { createStationsLayer } from './layers/wmsPoint';
 import { createPopup } from './popup';
+import { createSidePanel } from './sidePanel';
 
 // VWorld 배경지도 위에 MapPrime OGC 레이어를 올리는 실습 뷰어의 진입점.
 const map = createMap('map');
@@ -41,13 +42,8 @@ map.on('pointermove', (evt) => {
   map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
 });
 
-// 레이어 표시/숨김 토글
-document.querySelectorAll('[data-layer]').forEach((cb) => {
-  cb.addEventListener('change', () => {
-    const mod = modules[cb.dataset.layer];
-    if (mod) mod.layer.setVisible(cb.checked);
-  });
-});
+// 좌측 SidePanel(탭): 건물속성 조회 + 레이어 on/off
+createSidePanel({ modules });
 
 // 스타일 변경 토글: OFF=기본(스타일 미요청), ON=빨강(면)/파랑(선)/초록(점)
 document.getElementById('style-toggle').addEventListener('change', (e) => {

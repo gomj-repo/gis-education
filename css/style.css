@@ -145,6 +145,191 @@ body {
   flex: 1;
 }
 
+/* ── 좌측 SidePanel (탭 UI) ───────────────────────────── */
+#sidepanel {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  width: 320px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  font: 14px/1.5 system-ui, sans-serif;
+}
+
+/* OL 줌 컨트롤을 사이드패널 오른쪽으로 밀어 겹침 방지 */
+.ol-zoom {
+  left: calc(320px + 1.25rem);
+  top: 0.75rem;
+}
+
+#sidepanel .tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+#sidepanel .tab {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  border: 0;
+  background: #f7f7f8;
+  color: #666;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+#sidepanel .tab.active {
+  background: #fff;
+  color: #1a73e8;
+  border-bottom-color: #1a73e8;
+}
+
+#sidepanel .tab-body {
+  display: none;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.85rem;
+  gap: 0.6rem;
+}
+
+#sidepanel .tab-body.active {
+  display: flex;
+  flex: 1;
+}
+
+#sidepanel .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 12px;
+  color: #666;
+}
+
+#sidepanel .field select {
+  padding: 0.4rem;
+  font-size: 14px;
+}
+
+.cards {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 0.55rem 0.65rem;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.card table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+}
+
+.card th,
+.card td {
+  text-align: left;
+  vertical-align: top;
+  padding: 1px 6px 1px 0;
+  font-weight: 400;
+}
+
+.card th {
+  color: #999;
+  white-space: nowrap;
+}
+
+.chip {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.chip-polygon {
+  color: #c62828;
+  border-color: #ef9a9a;
+  background: #ffebee;
+}
+
+.chip-linestring {
+  color: #1565c0;
+  border-color: #90caf9;
+  background: #e3f2fd;
+}
+
+.chip-point {
+  color: #2e7d32;
+  border-color: #a5d6a7;
+  background: #e8f5e9;
+}
+
+.layer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.layer-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: #fafafa;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.layer-btn.active {
+  background: #eef4ff;
+  border-color: #1a73e8;
+}
+
+.layer-btn .layer-label {
+  flex: 1;
+}
+
+.layer-btn .state {
+  font-size: 11px;
+  font-weight: 700;
+  color: #aaa;
+}
+
+.layer-btn.active .state {
+  color: #1a73e8;
+}
+
+.empty {
+  color: #999;
+  font-size: 12px;
+  margin: 0.2rem 0;
+}
+
 /* 클릭 속성조회 팝업 */
 .ol-popup {
   position: absolute;

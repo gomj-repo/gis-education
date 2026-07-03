@@ -45,3 +45,17 @@ export const qualified = (name) =>
 export const wmsUrl = () => `${MAPPRIME_BASE_URL}/map/wms`;
 export const wfsUrl = () => `${MAPPRIME_BASE_URL}/map/wfs`;
 export const wmtsUrl = () => `${MAPPRIME_BASE_URL}/map/wmts`;
+
+// --- 레이어 표시 메타데이터 (SidePanel 카드/칩용) ---
+// nameProp: 카드 제목으로 쓸 속성명(entities의 name에 대응).
+export const LAYER_META = {
+  admin: { label: '읍면동 경계', geomType: 'polygon', nameProp: 'NAME' },
+  lines: { label: '지하철 노선', geomType: 'linestring', nameProp: 'name' },
+  stations: { label: '지하철 역', geomType: 'point', nameProp: '역사명' },
+};
+
+/** 선택 레이어의 피처 속성을 조회하는 WFS GetFeature(JSON) URL. */
+export const wfsFeaturesUrl = (layerKey, maxFeatures = 300) =>
+  `${wfsUrl()}?service=WFS&version=${WFS_VERSION}&request=GetFeature` +
+  `&typeName=${encodeURIComponent(qualified(LAYERS[layerKey]))}` +
+  `&outputFormat=application/json&maxFeatures=${maxFeatures}&srsName=${DATA_PROJECTION}`;

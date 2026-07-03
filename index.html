@@ -20,16 +20,30 @@
 
   <div id="map"></div>
 
+  <aside id="sidepanel">
+    <div class="tabs">
+      <button class="tab active" data-tab="attr">건물속성 조회</button>
+      <button class="tab" data-tab="layer">레이어 정보 조회</button>
+    </div>
+
+    <div id="tab-attr" class="tab-body active">
+      <label class="field">레이어
+        <select id="attr-layer-select"></select>
+      </label>
+      <div id="attr-cards" class="cards"></div>
+    </div>
+
+    <div id="tab-layer" class="tab-body">
+      <p class="hint">클릭하여 레이어를 켜고 끕니다.</p>
+      <div id="layer-list" class="layer-list"></div>
+    </div>
+  </aside>
+
   <div id="panel">
     <h1>배경지도</h1>
     <label><input type="checkbox" id="base-toggle" checked> 배경 표시</label>
     <label class="row">종류 <select id="base-select"></select></label>
     <label><input type="checkbox" id="hybrid-toggle"> 하이브리드(주기)</label>
-    <hr>
-    <h1>레이어</h1>
-    <label><input type="checkbox" data-layer="admin" checked> 읍면동 경계 <em>(WMTS)</em></label>
-    <label><input type="checkbox" data-layer="lines" checked> 지하철 노선 <em>(WFS)</em></label>
-    <label><input type="checkbox" data-layer="stations" checked> 지하철 역 <em>(WMS)</em></label>
     <hr>
     <label><input type="checkbox" id="style-toggle"> 스타일 변경 <em>(빨강/파랑/초록)</em></label>
     <p class="hint">피처를 클릭하면 속성을 조회합니다.</p>
