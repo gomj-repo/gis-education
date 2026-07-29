@@ -34,23 +34,6 @@ MAPPRIME_WORKSPACE=          # (선택) 레이어 워크스페이스
 
 > `.env`는 `.gitignore`에 포함되어 커밋되지 않는다. 키는 절대 소스에 하드코딩하지 않는다.
 
-## 코드 구조
-
-```
-js/
-  config.js            # .env 주입 값, 좌표계·격자·레이어명·스타일명·엔드포인트
-  map.js               # OL Map/View(4326) + VWorld 배경(WMTS)
-  popup.js             # 클릭 속성 팝업(Overlay)
-  layers/
-    wmtsPolygon.js     # 읍면동 (WMTS) + GetFeatureInfo
-    wfsLine.js         # 노선 (WFS) + colour 속성 스타일
-    wmsPoint.js        # 역 (WMS) + GetFeatureInfo
-  app.js               # 조립: 레이어·팝업·토글 배선
-  entities.js          # 도메인 모델(참고용 클래스 정의)
-```
-
-각 레이어 모듈은 `{ layer, setStyled(on), infoAt(map, evt) }`를 노출하고, `app.js`가 이를 조립한다.
-
 ## 확인 시 참고
 
 - **CORS**: WFS와 GetFeatureInfo는 `fetch`로 데이터를 받으므로 MapPrime에 CORS 허용이 필요하다.

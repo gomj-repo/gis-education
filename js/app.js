@@ -4,7 +4,7 @@ import { createBaseMaps } from './baseMaps';
 import { createAdminLayer } from './layers/wmtsPolygon';
 import { createLinesLayer } from './layers/wfsLine';
 import { createStationsLayer } from './layers/wmsPoint';
-import { createPopup } from './popup';
+import { createPopup } from './ui/popup';
 import { createSidePanel } from './sidePanel';
 
 // VWorld 배경지도 위에 MapPrime OGC 레이어를 올리는 실습 뷰어의 진입점.
